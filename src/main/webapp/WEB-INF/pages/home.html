@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+</head>
+<body>
+<h1>HELLO</h1>
+<h2>add menu</h2>
+
+    <!--/*@thymesVar id="newuser" type="root.model.User"*/-->
+    <form action="/add" method="post" th:object="${newuser}">
+        <label>
+            <input type="text" th:field="${newuser.name}">
+        </label>
+        <label>
+            <input type="text" th:field="${newuser.phone_number}">
+        </label>
+        <button type="submit" >ADD</button>
+    </form>
+<h2>Users table</h2>
+<table>
+  <thead>
+    <th>id</th>
+    <th>name</th>
+    <th>phonenumber</th>
+  </thead>
+    <tbody>
+        <tr th:each="user : ${userlist}">
+            <form method="post">
+            <td>
+                <label>
+                    <input type="number" th:field="${user.id}">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="text" th:field="${user.name}">
+                </label>
+            </td>
+            <td>
+                <label>
+                    <input type="text" th:field="${user.phone_number}">
+                </label>
+            </td>
+            <td>
+                <button type="submit" th:text="Save" formaction="@{/update}">UPDATE</button>
+            </td>
+            <td>
+                <button type="submit" th:text="Delete" formaction="@{/delete}">DELETE</button>
+            </td>
+            </form>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
