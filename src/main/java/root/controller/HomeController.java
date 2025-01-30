@@ -1,5 +1,6 @@
 package root.controller;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import root.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,23 +22,25 @@ public class HomeController {
         System.out.println(userService.getUsers());
         model.addAttribute("userlist", userService.getUsers());
         model.addAttribute("newuser", new User());
+        model.addAttribute("updateuser", new User());
         return "home";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute(name = "new_user") User user) {
+    public String add(User user) {
         userService.saveUser(user);
         return "redirect:/";
     }
 
     @PostMapping("/delete")
-    public String delete(@ModelAttribute(name = "delete_user") User user) {
-        userService.deleteUser(user);
+    public String delete(@RequestParam("userId") long userId) {
+        System.out.println("controller delete " + userId);
+        userService.deleteUserById(userId);
         return "redirect:/";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute(name = "update_user") User user) {
+    public String update(@ModelAttribute(name = "updateuser") User user) {
         userService.updateUser(user);
         return "redirect:/";
     }
