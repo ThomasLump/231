@@ -1,0 +1,9 @@
+database:
+  driver: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql://localhost:7777/mysql
+  username: root
+  password: ""
+
+hibernate:
+  ddl-auto: update
+  dialect: org.hibernate.dialect.MySQL8Dialect
