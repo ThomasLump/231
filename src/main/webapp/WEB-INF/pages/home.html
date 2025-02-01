@@ -52,7 +52,7 @@
     <label for="id">User ID:</label>
     <select id="id" th:field="${updateuser.id}">
         <option value="">Select User ID</option>
-        <option th:each="user : ${usergitlist}"
+        <option th:each="user : ${userlist}"
                 th:value="${user.id}"
                 th:text="${user.id}"></option>
     </select>

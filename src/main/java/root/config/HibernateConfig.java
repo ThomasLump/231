@@ -2,18 +2,14 @@ package root.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import jakarta.persistence.EntityManager;
-import org.hibernate.SessionFactory;
-import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import root.model.User;
 
 import java.util.Properties;
 
@@ -40,29 +36,23 @@ public class HibernateConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
-        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+    public LocalSessionFactoryBean getSessionFactory() {
+        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
         factoryBean.setDataSource(hikariDataSource());
-        factoryBean.setPackagesToScan("root.model");
-        factoryBean.setPersistenceProvider(new HibernatePersistenceProvider());
-        factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        factoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
 
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", properties().getProperty("hibernate.ddl-auto"));
-        properties.setProperty("hibernate.dialect", properties().getProperty("hibernate.dialect"));
+        Properties props = new Properties();
+        props.setProperty("hibernate.show_sql", "true");
+        props.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 
-        factoryBean.setJpaProperties(properties);
-        factoryBean.afterPropertiesSet();
+        factoryBean.setHibernateProperties(props);
+        factoryBean.setAnnotatedClasses(User.class);
         return factoryBean;
     }
-//    @Bean
-//    EntityManager entityManager() {
-//        return entityManagerFactoryBean().getObject().createEntityManager();
-//    }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new JpaTransactionManager(entityManagerFactoryBean().getObject());
+    public HibernateTransactionManager getTransactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(getSessionFactory().getObject());
+        return transactionManager;
     }
 }
